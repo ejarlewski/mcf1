@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Kanban</title>
+<meta name="description" content="A personal kanban board that runs entirely in your browser.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+<script>
+  // Apply the saved (or system) theme before first paint so there is no flash.
+  (function () {
+    try {
+      var stored = localStorage.getItem('kanban.theme');
+      var light = stored === 'light' ||
+        (stored === null && window.matchMedia('(prefers-color-scheme: light)').matches);
+      document.documentElement.dataset.theme = light ? 'light' : 'dark';
+    } catch (e) {
+      document.documentElement.dataset.theme = 'dark';
+    }
+  }());
+</script>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <h1 class="app-title">Personal Kanban</h1>
+    <span class="tagline" aria-hidden="true">mission control for one</span>
+  </div>
+
+  <div class="tools">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      <input id="search" type="search" placeholder="Search cards" aria-label="Search cards by title, description or label" autocomplete="off">
+      <kbd aria-hidden="true">/</kbd>
+    </div>
+
+    <select id="priority-filter" class="select" aria-label="Filter cards by priority">
+      <option value="all">All priorities</option>
+      <option value="high">High priority</option>
+      <option value="medium">Medium priority</option>
+      <option value="low">Low priority</option>
+    </select>
+
+    <button id="btn-new-card" type="button" class="btn btn-primary">
+      New card <kbd aria-hidden="true">N</kbd>
+    </button>
+    <button id="btn-theme" type="button" class="btn btn-icon" aria-label="Switch theme"></button>
+    <button id="btn-export" type="button" class="btn" title="Download the board as a JSON backup file">Export</button>
+    <button id="btn-import" type="button" class="btn" title="Replace the board from a JSON backup file">Import</button>
+    <input id="import-file" type="file" accept=".json,application/json" hidden>
+
+    <span id="status" class="status status--saved" role="status" aria-live="polite">Saved</span>
+  </div>
+</header>
+
+<div id="banner" class="banner" role="alert" hidden>Changes won't be saved.</div>
+
+<main id="board" class="board" aria-label="Kanban board"></main>
+
+<div id="modal-backdrop" class="backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <h2 id="modal-title">Edit card</h2>
+      <button id="modal-close" type="button" class="icon-btn modal-close" aria-label="Close and keep changes">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+      </button>
+    </div>
+
+    <form id="card-form" novalidate>
+      <label class="field">
+        <span class="field-name">Title</span>
+        <input id="f-title" type="text" maxlength="200" required>
+      </label>
+
+      <p id="form-error" class="field-error" role="alert" hidden></p>
+
+      <label class="field">
+        <span class="field-name">Description</span>
+        <textarea id="f-desc" rows="4" placeholder="Optional longer notes"></textarea>
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span class="field-name">Priority</span>
+          <select id="f-priority">
+            <option value="">None</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-name">Due date</span>
+          <input id="f-due" type="date">
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field-name">Labels</span>
+        <input id="f-labels" type="text" placeholder="comma, separated, values">
+      </label>
+
+      <p id="modal-meta" class="modal-meta"></p>
+
+      <div class="modal-actions">
+        <button id="modal-delete" type="button" class="btn btn-danger">Delete</button>
+        <span class="spacer"></span>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="storage.js"></script>
+<script src="state.js"></script>
+<script src="render.js"></script>
+<script src="dnd.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
