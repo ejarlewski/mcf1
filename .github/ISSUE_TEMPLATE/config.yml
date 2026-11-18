@@ -1,0 +1,4 @@
+# Issue template picker settings.
+# A free-form blank issue stays available for anything that does not fit the
+# two templates in this folder.
+blank_issues_enabled: true

@@ -1,0 +1,15 @@
+# Keep line endings sane for a repo that people edit on Windows, macOS and Linux.
+# Files are stored with LF in the repository and checked out with LF, so a
+# contributor's core.autocrlf setting cannot silently rewrite every line of a
+# diff.
+* text=auto eol=lf
+
+# Not text
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary

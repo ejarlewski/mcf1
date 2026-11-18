@@ -114,6 +114,14 @@ Documented decisions (chosen where the spec left room):
 - Confirmations use native `confirm()`/`alert()` — simple, keyboard-accessible
   and dependency-free.
 
+## Contributing
+
+Ideas and fixes are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the
+short version. The project stays deliberately small (no dependencies, no build
+step, no server), so anything bigger than a tweak is worth discussing in an
+issue first. Changes reach `main` only through pull requests — a branch ruleset
+blocks direct pushes; no review is required to merge.
+
 ## License
 
 Released under the **MIT License** — see [LICENSE](LICENSE).
