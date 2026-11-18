@@ -131,9 +131,20 @@ fi
 
 echo
 if [ -n "${DRY_RUN:-}" ]; then
-  echo "would verify with: gh api repos/$REPO/rulesets  (name/target/enforcement/bypass)"
+  echo "would verify with: gh api repos/$REPO/rulesets/<id>  (rules + bypass per ruleset)"
   exit 0
 fi
-echo "current rulesets on $REPO:"
-gh api "repos/$REPO/rulesets" \
-  -q '.[] | "\(.name)  target=\(.target)  enforcement=\(.enforcement)  bypass=\([.bypass_actors[]? | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(","))"'
+echo "live rulesets on $REPO (each fetched by id - the LIST endpoint omits rules and bypass_actors):"
+VERIFY_JQ=$(cat <<'JQ'
+"  \(.name)  id=\(.id)  enforcement=\(.enforcement)  target=\(.target)\n" +
+"  branches:  \(.conditions.ref_name.include | join(", "))\n" +
+"  rules:     \([.rules[].type] | join(", "))\n" +
+"  approvals required: \([.rules[]? | select(.type=="pull_request") | .parameters.required_approving_review_count] | join(","))\n" +
+"  bypass:    \([.bypass_actors[]? | "\(.actor_type):\(.actor_id) (\(.bypass_mode))"] | join(", "))\n" +
+"  you can bypass: \(.current_user_can_bypass)\n" +
+"  edit in the UI: \(._links.html.href)"
+JQ
+)
+for rid in $(gh api "repos/$REPO/rulesets" -q '.[].id'); do
+  gh api "repos/$REPO/rulesets/$rid" -q "$VERIFY_JQ"
+done
