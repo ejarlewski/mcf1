@@ -103,9 +103,20 @@ file is only an input — GitHub does not read it automatically. Apply it with:
 bash scripts/apply-github-ruleset.sh      # needs gh, authenticated with the repo scope
 ```
 
-Re-run that script whenever you edit the JSON. Note that on the free plan
-rulesets only exist for **public** repositories, so a private fork of this repo
-cannot apply them until it is public.
+Re-run that script whenever you edit the JSON. As written it enforces three
+things on the default branch: nobody deletes it, nobody force-pushes it, and
+every change must arrive through a pull request — with zero approvals required,
+so a solo maintainer can still merge their own work.
+
+Two things worth knowing before you change it:
+
+- On the free plan rulesets only exist for **public** repositories, so a private
+  fork of this repo cannot apply them until it is public.
+- Do not add `{ "type": "update" }` back. That rule counts merging a pull
+  request as an update of the protected ref, which leaves the maintainer unable
+  to merge their own pull request while their bypass is set to `pull_request`
+  (observed as "the base branch policy prohibits the merge"). The
+  `pull_request` rule already refuses direct pushes on its own.
 
 Also in this repo: [pull request template](.github/PULL_REQUEST_TEMPLATE.md) and
 [issue templates](.github/ISSUE_TEMPLATE). If a label named in a template does
