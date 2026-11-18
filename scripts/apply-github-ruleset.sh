@@ -12,22 +12,34 @@
 # What the ruleset does (see .github/rulesets/protect-main.json):
 #   - deletion            : nobody deletes the default branch
 #   - non_fast_forward    : nobody force-pushes (rewrites history)
-#   - update              : only bypass actors may push to it at all
 #   - pull_request        : every change to it must arrive via a pull request,
 #                           with 0 approvals required (so the maintainer can
-#                           merge their own PRs while solo)
-#   - bypass_actors       : the repo owner, but "pull_request" mode only, i.e.
-#                           they may merge PRs but still cannot push directly
+#                           merge their own PRs while solo). This rule on its
+#                           own is what refuses direct pushes to main.
+#   - bypass_actors       : the repo owner, in "pull_request" mode, i.e. they
+#                           may satisfy changes through PRs but nothing else.
+#
+# The "update" rule is deliberately NOT used. It treats merging a pull request
+# as an update of the protected ref, so with a "pull_request"-mode bypass even
+# the maintainer's own PR stops being mergeable. Measured on this repo: with
+# "update" present, merging a PR failed with "the base branch policy prohibits
+# the merge"; after removing it the same PR merged normally, while a direct push
+# to main was still declined with GH013 "Cannot update this protected ref" /
+# "Changes must be made through a pull request".
 #
 # Variants you might want (edit the JSON, then re-run this script):
 #   - Let the maintainer push straight to main again:
 #         "bypass_mode": "always"
+#   - Do NOT add { "type": "update" } back — see the note directly above.
 #   - Freeze main completely (nobody can merge, not even you — you cannot
 #     approve your own PR): set "required_approving_review_count": 1
 #   - Squash/rebase merges only: add { "type": "required_linear_history" } to
 #     "rules" and drop "merge" from "allowed_merge_methods".
 #   - Protect branches other than the default: replace "~DEFAULT_BRANCH" in
 #     conditions.ref_name.include with a pattern such as "release/*".
+#   - Give contributors a reason to keep PRs small: "required_approving_review_count": 1
+#     only makes sense once a second human exists, because you cannot approve
+#     your own pull request.
 
 set -uo pipefail
 
