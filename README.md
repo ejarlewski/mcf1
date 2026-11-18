@@ -1,5 +1,7 @@
 # Personal Kanban Board
 
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 A zero-dependency, offline-ready personal Kanban board. Three static files
 (`index.html`, `styles.css` + five plain scripts) — no build step, no npm,
 no frameworks, no CDNs, no web fonts. Your board lives in your browser's
@@ -111,3 +113,12 @@ Documented decisions (chosen where the spec left room):
   rename: Enter and blur commit; Esc cancels and restores the old name.
 - Confirmations use native `confirm()`/`alert()` — simple, keyboard-accessible
   and dependency-free.
+
+## License
+
+Released under the **MIT License** — see [LICENSE](LICENSE).
+
+Do whatever you like with it: use it commercially, copy it, modify it,
+relicense it, keep it private or publish it. The only condition is that you
+keep the original copyright and license notice in any substantial copies.
+It comes with no warranty of any kind.
